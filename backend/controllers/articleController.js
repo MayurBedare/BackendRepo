@@ -65,56 +65,10 @@ const deleteArticle = async (req, res) => {
     }
 };
 
-// AI Mock Features
-const improveAI = async (req, res) => {
-    const { content } = req.body;
-    if (!content) return res.json({ improvedContent: '' });
-
-    // Mock AI Logic: Clean up and polish the text
-    let improved = content
-        .replace(/  +/g, ' ') // Remove double spaces
-        .replace(/\.\.+/g, '.') // Fix multiple periods
-        .replace(/([.?!])\s*([a-z])/g, (match, p1, p2) => `${p1} ${p2.toUpperCase()}`); // Capitalize after punctuation
-
-    // Add a professional concluding sentence if not present
-    if (!improved.toLowerCase().includes('conclusion') && !improved.toLowerCase().includes('summary')) {
-        improved += "<p><em>AI Polish: This section has been refined for clarity and professional tone.</em></p>";
-    }
-
-    res.json({ improvedContent: improved });
-};
-
-const suggestTagsAI = async (req, res) => {
-    const { content } = req.body;
-    if (!content) return res.json({ tags: [] });
-
-    // Mock AI Logic: Detect tags from content keywords
-    const potentialTags = ['AI', 'React', 'NodeJS', 'Database', 'Frontend', 'Backend', 'DevOps', 'Cloud', 'Design'];
-    const tags = potentialTags.filter(tag =>
-        content.toLowerCase().includes(tag.toLowerCase())
-    ).slice(0, 4);
-
-    if (tags.length === 0) tags.push('Knowledge', 'Article');
-    res.json({ tags });
-};
-
-const summarizeAI = async (req, res) => {
-    const { content } = req.body;
-    if (!content) return res.json({ summary: '' });
-
-    // Mock AI Logic: Extract first few clean sentences
-    const cleanContent = content.replace(/<[^>]*>?/gm, ' ');
-    const summary = cleanContent.split(/[.!?]/).slice(0, 2).join('. ') + '... (AI Summary)';
-    res.json({ summary });
-};
-
 module.exports = {
     getArticles,
     getArticleById,
     createArticle,
     updateArticle,
     deleteArticle,
-    improveAI,
-    suggestTagsAI,
-    summarizeAI,
 };

@@ -5,10 +5,8 @@ const {
     createArticle,
     updateArticle,
     deleteArticle,
-    improveAI,
-    suggestTagsAI,
-    summarizeAI,
 } = require('../controllers/articleController');
+const { improveArticle, suggestTags, summarizeArticle } = require('../controllers/aicontroller');
 const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
@@ -19,8 +17,8 @@ router.put('/:id', protect, updateArticle);
 router.delete('/:id', protect, deleteArticle);
 
 // AI Routes
-router.post('/ai/improve', protect, improveAI);
-router.post('/ai/tags', protect, suggestTagsAI);
-router.post('/ai/summarize', protect, summarizeAI);
+router.post('/ai/improve', protect, improveArticle);
+router.post('/ai/tags', protect, suggestTags);
+router.post('/ai/summarize', protect, summarizeArticle);
 
 module.exports = router;

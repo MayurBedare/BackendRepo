@@ -1,120 +1,148 @@
-# ⚙️ AI Knowledge Hub – Backend Repository
+# ⚙️ AI Knowledge Hub – Backend
 
-This is the backend engine for the **AI Knowledge Hub**, a platform designed for sharing technical insights with the help of AI.  
+This is the backend service for **AI Knowledge Hub**, a platform where users can create and improve technical articles using AI.
 
-Built with **Node.js, Express, and MySQL**, it handles secure authentication, article management, and serves as the bridge for AI-assisted features.
+The backend is built using **Node.js, Express, and MySQL**, and it handles:
 
----
-
-# 🚀 1. Approach
-
-## 🏗️ Architecture Overview
-
-The backend follows a **modular monolithic architecture** to keep the codebase organized, scalable, and easy to maintain.
-
-### 🔹 Tech Stack
-
-- **Node.js & Express** – Lightweight and fast API layer  
-- **Sequelize ORM** – Safe database interaction, prevents raw SQL injection  
-- **MySQL 8.0** – Reliable relational data storage  
-- **Docker** – Consistent and portable database environment  
-- **JWT** – Stateless and secure authentication  
+* User authentication
+* Article management (CRUD)
+* AI-powered content features
+* Secure communication between frontend and database
 
 ---
 
-## 📂 Folder Structure
+# 🚀 1. Project Approach
+
+## 🏗 Architecture Overview
+
+The backend follows a **modular monolithic structure**.
+This means everything runs in one server, but the code is divided into clean modules (routes, controllers, models, middleware) for better organization.
+
+---
+
+## 🔹 Tech Stack
+
+* **Node.js + Express** → API development
+* **Sequelize ORM** → Database interaction (safe & structured)
+* **MySQL 8.0** → Relational database
+* **Docker** → Database container setup
+* **JWT (JSON Web Token)** → Secure authentication
+* **bcryptjs** → Password hashing
+* **Google Gemini SDK** → AI features integration
+
+---
+
+# 📂 Folder Structure
 
 ```
 BackendRepo/
-├── backend/                 # Express.js application logic
-│   ├── config/              # Database & Sequelize configuration
-│   ├── controllers/         # Handles requests & business logic
-│   ├── middleware/          # JWT verification & validation logic
-│   ├── models/              # Sequelize schemas (User, Article, Tag)
-│   ├── routes/              # API endpoint definitions
-│   └── index.js             # Server entry point
-├── database/                # Infrastructure setup
-│   ├── docker-compose.yml   # MySQL container orchestration
-│   ├── init.sql             # Initial schema setup
-└── README.md                # Documentation
+├── backend/
+│   ├── config/          → Database configuration
+│   ├── controllers/     → Business logic (Auth, Articles, AI)
+│   ├── middleware/      → JWT verification & error handling
+│   ├── models/          → Sequelize models (User, Article)
+│   ├── routes/          → API route definitions
+│   ├── seed.js          → Add demo users & articles
+│   ├── resetDB.js       → Reset database
+│   └── index.js         → Main server file
+├── database/
+│   ├── docker-compose.yml
+│   ├── init.sql
+└── README.md
 ```
 
----
-
-## 🧠 Key Design Decisions
-
-### 🐳 Dockerized Database
-Implemented Docker so the database setup becomes a **one-command process**, eliminating "works on my machine" issues.
-
-### 🔗 Relational Integrity
-Used **foreign key constraints** between users and articles to maintain strict data consistency.
-
-### 🔐 Secure Password Handling
-Passwords are hashed using **bcryptjs** before storage.
-
-### ⚠️ Centralized Error Handling
-A custom error-handling middleware ensures:
-- Consistent API responses  
-- Clean logging  
-- Easier debugging  
+This structure makes it easier to maintain and scale the application.
 
 ---
 
-# 🤖 2. AI Usage (Mandatory Section)
+# 🧠 Important Design Decisions
 
-AI played a major role in development as a **senior pair programmer**, improving speed and code quality.
+## 🤖 Cascading AI Architecture
+
+Instead of using only one AI model, I implemented a **fallback system**:
+
+1. **Primary** → `gemini-3-flash-preview`
+2. **Secondary** → `gemini-2.0-flash`
+3. **Tertiary** → `gemini-flash-lite`
+
+If the first model fails due to overload (503) or quota issues (429), the system automatically switches to the next model.
+
+This ensures AI features continue working even during heavy usage.
+
+---
+
+## 🐳 Dockerized Database
+
+Used Docker to run MySQL inside a container.
+
+Benefits:
+
+* One-command database setup
+* Same environment for everyone
+* No local installation conflicts
+
+---
+
+## 🔐 Secure Authentication
+
+* Passwords are hashed using **bcryptjs**
+* JWT is used for login sessions
+* Token expiration added for better security
+* Protected routes ensure only logged-in users can create/update/delete articles
+
+---
+
+## ⚠️ Centralized Error Handling
+
+Implemented a custom error middleware to:
+
+* Return consistent API responses
+* Avoid exposing internal server details
+* Improve debugging
+
+---
+
+# 🤖 2. AI Usage During Development
+
+AI was used as a development assistant, not as a replacement for understanding.
 
 ## 🛠 AI Tools Used
 
-- **Gemini** – Architecture brainstorming and quick idea validation  
-- **ChatGPT** – Backend logic structuring, debugging, and refinement  
-- **Antigravity** – Fast scaffolding and boilerplate acceleration  
+* Gemini → Helped in brainstorming fallback logic
+* ChatGPT → Debugging and structuring backend logic
+* Antigravity → Initial boilerplate scaffolding
 
 ---
 
 ## 💡 Where AI Helped
 
-### 🔹 Boilerplate & Scaffolding
-Generated initial Express server setup and Sequelize model templates.
-
-### 🔹 SQL & Sequelize Logic
-Assisted in creating many-to-many relationships between Articles and Tags.
-
-### 🔹 Docker Configuration
-Drafted a robust `docker-compose.yml` including health checks.
-
-### 🔹 API Design
-Helped structure RESTful endpoints for search and filtering.
+* Drafting multi-model fallback logic
+* Generating initial Express server setup
+* Creating Sequelize model templates
+* Designing REST API structure
 
 ---
 
-## ✏️ What Was Manually Improved
+## ✏️ What I Improved Manually
 
-### 🔐 Security Enhancements
-- Added JWT expiration  
-- Improved secret key handling  
-
-### 📧 Validation Logic
-- Added custom email regex validation  
-
-### 🐛 DB Connection Handling
-- Fixed race condition where backend connected before MySQL container was ready  
+* Added JWT expiration handling
+* Improved input validation and sanitization
+* Added better error responses
+* Overall code refinement
+* Handling constraints for AI models and edge test cases and validation
 
 ---
 
-# 🛠️ 3. Setup Instructions
+# 🛠 3. Setup Instructions
 
 ## ✅ Prerequisites
 
-- Node.js (v18+)
-- Docker
-- Docker Compose
+* Node.js (v18+)
+* Docker & Docker Compose
 
 ---
 
-## 🐳 Step 1: Database Setup
-
-Navigate to the `database` directory and start the MySQL container:
+## 🐳 Step 1: Start Database
 
 ```bash
 cd database
@@ -125,19 +153,34 @@ docker-compose up -d
 
 ## 🚀 Step 2: Backend Setup
 
-Navigate to the backend directory, install dependencies, and start the server:
-
 ```bash
 cd backend
 npm install
+```
+
+### Seed Demo Data
+
+```bash
+node seed.js
+```
+
+### Start Server
+
+```bash
 npm start
+```
+
+Server runs on:
+
+```
+http://localhost:5000
 ```
 
 ---
 
 ## 🔑 Step 3: Environment Variables
 
-Create a `.env` file inside the `backend/` directory:
+Create `.env` inside `backend/`:
 
 ```
 PORT=5000
@@ -146,7 +189,10 @@ DB_USER=root
 DB_PASS=yourpassword
 DB_NAME=knowledge_hub
 JWT_SECRET=yoursecretkey
+GEMINI_API_KEY=your_actual_gemini_key
 ```
+
+`.env` is ignored using `.gitignore` to prevent secret leaks.
 
 ---
 
@@ -154,36 +200,50 @@ JWT_SECRET=yoursecretkey
 
 ## 🔐 Authentication
 
-- `POST /api/auth/signup` → Register user  
-- `POST /api/auth/login` → Login (returns JWT token)
+* `POST /api/auth/signup`
+* `POST /api/auth/login`
 
 ---
 
 ## 📝 Articles
 
-- `GET /api/articles` → Get all articles (Public)  
-- `POST /api/articles` → Create article (Auth required)  
-- `PUT /api/articles/:id` → Update article (Author only)  
-- `DELETE /api/articles/:id` → Delete article (Author only)
+* `GET /api/articles`
+* `POST /api/articles`
+* `PUT /api/articles/:id`
+* `DELETE /api/articles/:id`
+
+---
+
+## 🤖 AI Features
+
+(All require authentication)
+
+* `POST /api/articles/ai/improve`
+* `POST /api/articles/ai/tags`
+* `POST /api/articles/ai/summarize`
 
 ---
 
 # 🎥 5. Demo
 
-**Demo Link:** https://drive.google.com/file/d/1baYkpX3SSy3Vzyv77uQWCh1mYHlmISxl/view?usp=sharing
+Demo Link:
+[https://drive.google.com/file/d/1ubV9CX3EkKOD1o5HMLPkun9emjzmtdRZ/view?usp=sharing](https://drive.google.com/file/d/1ubV9CX3EkKOD1o5HMLPkun9emjzmtdRZ/view?usp=sharing)
 
-The demo showcases:
+Demo includes:
 
-- User Signup & Login  
-- JWT Authentication  
-- Article Creation  
-- AI Content Enhancement  
-- Full CRUD Operations  
-
----
-
-# 👨‍💻 Author
-
-Built as part of a backend system for an AI-powered technical knowledge sharing platform.
+* User Registration & Login
+* JWT Authentication
+* Article CRUD operations
+* Cascading AI content improvement
 
 ---
+
+# 👨‍💻 About This Project
+
+This backend demonstrates:
+
+* Real-world REST API development
+* Secure authentication implementation
+* Database relationships using Sequelize
+* Practical AI integration with fallback logic
+* Docker-based environment setup
